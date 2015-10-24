@@ -3,6 +3,11 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class PinSetter : MonoBehaviour {
+	public int lastStandingCount =-1;
+	private int standingPins=0;
+
+	private float lastChangeTime;
+	private bool ballEnteredBox=false;
 
 	public  Text StandingPinsText;
 	// Use this for initialization
@@ -12,28 +17,52 @@ public class PinSetter : MonoBehaviour {
 
 	public int CountStanding(){
 
-		int standingPins=0;
+		standingPins=0;
 
 
 		foreach (Pin thisPin in FindObjectsOfType<Pin>()) {
 			if (thisPin.IsStanding()){
 				standingPins++;
 				Debug.Log (standingPins);
-				StandingPinsText.text = standingPins.ToString ();
+			
 			}else{}
 		}
-		StandingPinsText.text = standingPins.ToString ();
-		StandingPinsText.color=Color.black;
+		int currentText = int.Parse(StandingPinsText.text);
+		if (currentText != standingPins){
+			StandingPinsText.text = standingPins.ToString ();
+			lastChangeTime=Time.time;
+		}
+
 		return standingPins;
 
 	}
 	// Update is called once per frame
-	void Update () {
-	
+	void Update(){
+	if (ballEnteredBox) {
+			CountStanding();
+			CheckStanding();
+		}
 	}
+
+	void CheckStanding(){
+		Debug.Log (Time.time - lastChangeTime);
+		if ((Time.time - lastChangeTime) >= 3f) {
+			PinsHaveSettled ();
+		}
+	}
+
+	void PinsHaveSettled(){
+		StandingPinsText.text = standingPins.ToString ();
+		StandingPinsText.color=Color.green;
+		lastStandingCount = standingPins;
+		ballEnteredBox = false;
+	}
+
+
 	void OnTriggerEnter(Collider ball){
 		if (ball.GetComponent<Ball>()){
-		Invoke("CountStanding",5f);
+			ballEnteredBox=true;
+			lastChangeTime=Time.time;
 			StandingPinsText.color=Color.red;
 		}
 	}
