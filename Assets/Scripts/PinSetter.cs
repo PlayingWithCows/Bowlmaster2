@@ -4,15 +4,17 @@ using System.Collections;
 
 public class PinSetter : MonoBehaviour {
 	public int lastStandingCount =-1;
-	private int standingPins=0;
+	public  Text StandingPinsText;
 
+	private Ball ball;
+	private int standingPins=0;
 	private float lastChangeTime;
 	private bool ballEnteredBox=false;
 
-	public  Text StandingPinsText;
+
 	// Use this for initialization
 	void Start () {
-
+		ball = GameObject.FindObjectOfType<Ball>();
 	}
 
 	public int CountStanding(){
@@ -27,8 +29,8 @@ public class PinSetter : MonoBehaviour {
 			
 			}else{}
 		}
-		int currentText = int.Parse(StandingPinsText.text);
-		if (currentText != standingPins){
+
+		if (int.Parse(StandingPinsText.text) != standingPins){
 			StandingPinsText.text = standingPins.ToString ();
 			lastChangeTime=Time.time;
 		}
@@ -48,7 +50,8 @@ public class PinSetter : MonoBehaviour {
 		Debug.Log (Time.time - lastChangeTime);
 		if ((Time.time - lastChangeTime) >= 3f) {
 			PinsHaveSettled ();
-		}
+			}
+
 	}
 
 	void PinsHaveSettled(){
@@ -56,6 +59,7 @@ public class PinSetter : MonoBehaviour {
 		StandingPinsText.color=Color.green;
 		lastStandingCount = standingPins;
 		ballEnteredBox = false;
+		ball.Reset();
 	}
 
 
@@ -77,11 +81,7 @@ public class PinSetter : MonoBehaviour {
 			}
 		}
 
-		else if (other.GetComponent<Ball>()) {
-			Debug.Log ("destroyed " + other.gameObject);
-			Destroy (other.gameObject,1f);
-		}
-
+	
 
 		}
 
