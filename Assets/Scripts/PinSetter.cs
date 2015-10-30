@@ -5,16 +5,43 @@ using System.Collections;
 public class PinSetter : MonoBehaviour {
 	public int lastStandingCount =-1;
 	public  Text StandingPinsText;
+	public GameObject pinSet;
 
 	private Ball ball;
 	private int standingPins=0;
 	private float lastChangeTime;
 	private bool ballEnteredBox=false;
 
-
 	// Use this for initialization
 	void Start () {
 		ball = GameObject.FindObjectOfType<Ball>();
+
+	}
+
+	public void RaisePins() {
+		
+		foreach (Pin thisPin in FindObjectsOfType<Pin>()) {
+			if (thisPin.IsStanding()){
+
+				thisPin.Raise();
+			}
+		}
+	}
+	
+	public void LowerPins() {
+		Debug.Log ("Lower Pins");
+		foreach (Pin thisPin in FindObjectsOfType<Pin>()) {
+			if (thisPin.IsStanding()){
+				
+				thisPin.Lower();
+				
+			}
+		}
+	}
+
+
+	public void RenewPins(){
+		Instantiate (pinSet, new Vector3 (0,3.5f,182.9f), Quaternion.identity);
 	}
 
 	public int CountStanding(){
